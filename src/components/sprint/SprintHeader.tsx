@@ -4,7 +4,7 @@ import { Sprint, useBoard } from '@/context/BoardContext';
 import { Button } from '@/components/ui/button';
 import { 
   Play, 
-  SquareStop, 
+  Square, 
   Edit,
   Trash2,
   Calendar
@@ -73,7 +73,7 @@ const SprintHeader: React.FC<SprintHeaderProps> = ({ sprint, onEdit }) => {
               className="text-yellow-600 border-yellow-200 hover:bg-yellow-50"
               onClick={() => endSprint(sprint.id)}
             >
-              <SquareStop className="h-3.5 w-3.5 mr-1.5" /> 
+              <Square className="h-3.5 w-3.5 mr-1.5" /> 
               End Sprint
             </Button>
           )}

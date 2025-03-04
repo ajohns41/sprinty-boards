@@ -12,7 +12,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton
 } from '@/components/ui/sidebar';
-import { Calendar, ClipboardList, LayoutGrid } from 'lucide-react';
+import { Calendar, ClipboardList, LayoutGrid, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -67,7 +67,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ view, setView, onAddSprint }) =
         <SidebarGroup>
           <div className="flex items-center justify-between pr-3">
             <SidebarGroupLabel>Sprints</SidebarGroupLabel>
-            <Button variant="ghost" size="icon-sm" onClick={onAddSprint}>
+            <Button variant="ghost" size="sm" onClick={onAddSprint}>
               <Plus className="h-4 w-4" />
             </Button>
           </div>
