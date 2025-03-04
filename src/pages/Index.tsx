@@ -9,6 +9,7 @@ import BacklogView from '@/components/board/BacklogView';
 import SprintView from '@/components/board/SprintView';
 import TaskDialog from '@/components/task/TaskDialog';
 import SprintDialog from '@/components/sprint/SprintDialog';
+import SprintSelector from '@/components/sprint/SprintSelector';
 
 const Index = () => {
   const [view, setView] = useState('board');
@@ -85,6 +86,17 @@ const Index = () => {
             <AppHeader onCreateTask={handleCreateTask} />
             
             <main className="flex-1 p-6 overflow-auto">
+              <div className="mb-6 flex items-center justify-between">
+                <h1 className="text-2xl font-semibold">
+                  {view === 'board' ? 'Board View' : 
+                   view === 'backlog' ? 'Backlog' : 
+                   currentSprintId ? 'Sprint View' : 'Dashboard'}
+                </h1>
+                <SprintSelector 
+                  currentView={view}
+                  onViewChange={setView}
+                />
+              </div>
               {renderView()}
             </main>
           </div>
