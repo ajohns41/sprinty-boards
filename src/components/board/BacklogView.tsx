@@ -5,6 +5,13 @@ import TaskCard from '@/components/task/TaskCard';
 import { Button } from '@/components/ui/button';
 import { List, GridIcon, Plus } from 'lucide-react';
 import { Toggle } from '@/components/ui/toggle';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 interface BacklogViewProps {
   onTaskEdit: (task: Task) => void;
@@ -69,64 +76,118 @@ const BacklogView: React.FC<BacklogViewProps> = ({ onTaskEdit, onCreateTask }) =
       {viewMode === 'card' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {backlogTasks.map((task) => (
-            <div key={task.id} className="flex flex-col h-full">
-              <TaskCard task={task} onEdit={onTaskEdit} />
-              
-              {activeSprint && (
-                <div className="mt-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full text-xs"
-                    onClick={() => handleAssignToSprint(task.id, activeSprint.id)}
-                  >
-                    Add to Active Sprint
-                  </Button>
+            <ContextMenu key={task.id}>
+              <ContextMenuTrigger>
+                <div className="flex flex-col h-full">
+                  <TaskCard task={task} onEdit={onTaskEdit} />
+                  
+                  {activeSprint && (
+                    <div className="mt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-xs"
+                        onClick={() => handleAssignToSprint(task.id, activeSprint.id)}
+                      >
+                        Add to Active Sprint
+                      </Button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </ContextMenuTrigger>
+              <ContextMenuContent>
+                <ContextMenuItem onClick={() => onTaskEdit(task)}>
+                  Edit Task
+                </ContextMenuItem>
+                <ContextMenuSeparator />
+                {sprints.filter(sprint => sprint.isActive).length > 0 && (
+                  <>
+                    <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                      Assign to Sprint
+                    </div>
+                    {sprints
+                      .filter(sprint => sprint.isActive)
+                      .map(sprint => (
+                        <ContextMenuItem 
+                          key={sprint.id}
+                          onClick={() => handleAssignToSprint(task.id, sprint.id)}
+                        >
+                          {sprint.name}
+                        </ContextMenuItem>
+                      ))}
+                  </>
+                )}
+              </ContextMenuContent>
+            </ContextMenu>
           ))}
         </div>
       ) : (
         <div className="rounded-md border">
           <div className="divide-y">
             {backlogTasks.map((task) => (
-              <div key={task.id} className="flex items-center p-3 hover:bg-accent/50 transition-colors">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${
-                      task.priority === 'high' ? 'bg-red-500' : 
-                      task.priority === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
-                    }`} />
-                    <h3 className="font-medium text-sm">{task.title}</h3>
+              <ContextMenu key={task.id}>
+                <ContextMenuTrigger>
+                  <div className="flex items-center p-3 hover:bg-accent/50 transition-colors">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${
+                          task.priority === 'high' ? 'bg-red-500' : 
+                          task.priority === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
+                        }`} />
+                        <h3 className="font-medium text-sm">{task.title}</h3>
+                      </div>
+                      {task.description && (
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                          {task.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {activeSprint && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-xs h-7"
+                          onClick={() => handleAssignToSprint(task.id, activeSprint.id)}
+                        >
+                          Add to Sprint
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs h-7"
+                        onClick={() => onTaskEdit(task)}
+                      >
+                        Edit
+                      </Button>
+                    </div>
                   </div>
-                  {task.description && (
-                    <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
-                      {task.description}
-                    </p>
+                </ContextMenuTrigger>
+                <ContextMenuContent>
+                  <ContextMenuItem onClick={() => onTaskEdit(task)}>
+                    Edit Task
+                  </ContextMenuItem>
+                  <ContextMenuSeparator />
+                  {sprints.filter(sprint => sprint.isActive).length > 0 && (
+                    <>
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                        Assign to Sprint
+                      </div>
+                      {sprints
+                        .filter(sprint => sprint.isActive)
+                        .map(sprint => (
+                          <ContextMenuItem 
+                            key={sprint.id}
+                            onClick={() => handleAssignToSprint(task.id, sprint.id)}
+                          >
+                            {sprint.name}
+                          </ContextMenuItem>
+                        ))}
+                    </>
                   )}
-                </div>
-                <div className="flex items-center gap-2">
-                  {activeSprint && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-xs h-7"
-                      onClick={() => handleAssignToSprint(task.id, activeSprint.id)}
-                    >
-                      Add to Sprint
-                    </Button>
-                  )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-xs h-7"
-                    onClick={() => onTaskEdit(task)}
-                  >
-                    Edit
-                  </Button>
-                </div>
-              </div>
+                </ContextMenuContent>
+              </ContextMenu>
             ))}
           </div>
         </div>
